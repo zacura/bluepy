@@ -260,7 +260,7 @@ class BluepyHelper:
             self._poller.unregister(self._helper.stdout)
             self._helper.stdin.write("quit\n")
             self._helper.stdin.flush()
-            self._helper.wait()
+            self._helper.communicate()
             self._helper = None
         if self._stderr is not None:
             self._stderr.close()
@@ -369,7 +369,7 @@ class Peripheral(BluepyHelper):
     def __exit__(self, type, value, traceback):
         self.disconnect()
 
-    def _getResp(self, wantType, timeout=30):
+    def _getResp(self, wantType, timeout=None):
         if isinstance(wantType, list) is not True:
             wantType = [wantType]
 
