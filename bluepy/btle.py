@@ -369,7 +369,7 @@ class Peripheral(BluepyHelper):
     def __exit__(self, type, value, traceback):
         self.disconnect()
 
-    def _getResp(self, wantType, timeout=None):
+    def _getResp(self, wantType, timeout=30):
         if isinstance(wantType, list) is not True:
             wantType = [wantType]
 
