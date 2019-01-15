@@ -80,6 +80,7 @@ static const int opt_psm = 0;
 static int opt_mtu = 0;
 static int start;
 static int end;
+static bool is_scanning = FALSE;
 
 static uint16_t mgmt_ind = MGMT_INDEX_NONE;
 static struct mgmt *mgmt_master = NULL;
@@ -1591,6 +1592,7 @@ static void scan(bool start)
         resp_mgmt(err_SEND_FAIL);
         return;
     }
+    is_scanning = start;
 }
 
 static void cmd_scanend(int argcp, char **argvp)
@@ -1999,7 +2001,8 @@ static void mgmt_scanning(uint16_t index, uint16_t length,
 
     DBG("Scanning (0x%x): %s", ev->type, ev->discovering? "started" : "ended");
 
-    set_state(ev->discovering? STATE_SCANNING : STATE_DISCONNECTED);
+    if (is_scanning)
+        set_state(ev->discovering? STATE_SCANNING : STATE_DISCONNECTED);
 }
 
 static void mgmt_device_found(uint16_t index, uint16_t length,
