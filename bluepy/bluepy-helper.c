@@ -581,7 +581,6 @@ static void disconnect_io()
     attrib = NULL;
     opt_mtu = 0;
 
-    g_io_channel_shutdown(iochannel, FALSE, NULL);
     g_io_channel_unref(iochannel);
     iochannel = NULL;
 
