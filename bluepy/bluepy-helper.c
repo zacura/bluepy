@@ -1590,6 +1590,7 @@ static void scan(bool start)
     {
         DBG("mgmt_send(MGMT_OP_%s_DISCOVERY) failed", start? "START" : "STOP");
         resp_mgmt(err_SEND_FAIL);
+        is_scanning = FALSE;
         return;
     }
     is_scanning = start;
