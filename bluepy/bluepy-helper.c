@@ -31,6 +31,9 @@
 #include <stdio.h>
 #include <assert.h>
 #include <glib.h>
+#include <sys/types.h>
+#include <unistd.h>
+#include <stdio.h>
 
 
 #include "lib/bluetooth.h"
@@ -57,14 +60,27 @@ static FILE * fp = NULL;
 
 static void try_open(void) {
     if (!fp) {
-        fp = fopen ("bluepy-helper.log", "w");
+        char name[255];
+        snprintf(name, sizeof(name), "/tmp/bluepy-helper.log.%u", getpid());
+        fp = fopen (name, "w");
+    }
+}
+static void try_delete(void) {
+    if (fp) {
+        char name[255];
+        snprintf(name, sizeof(name), "/tmp/bluepy-helper.log.%u", getpid());
+        fclose(fp);
+        unlink(name);
     }
 }
 #define DBG(fmt, ...) do {try_open();if (fp) {fprintf(fp, "%s() :" fmt "\n", __FUNCTION__, ##__VA_ARGS__); fflush(fp);} \
     } while(0)
 
+#define DBG_DELETE_LOG() do {try_delete(); } while(0)
+
 #else
 #define DBG(fmt, ...)
+#define DBG_DELETE_LOG()
 #endif
 #endif
 
@@ -1409,7 +1425,7 @@ static void read_local_oob_data_complete(uint8_t status, uint16_t len,
     DBG("received local OOB ext with eir_len = %d",eir_len);
     for (i = 0; i<eir_len; i++)
         DBG("0x%02x ", rp->eir[i]);
-    
+
     resp_begin(rsp_OOB);
     send_data(rp->eir, eir_len);
     resp_end();
@@ -2116,7 +2132,7 @@ int main(int argc, char *argv[])
     mgmt_unref(mgmt_master);
     mgmt_master = NULL;
 
+    DBG_DELETE_LOG();
+
     return EXIT_SUCCESS;
 }
-
-

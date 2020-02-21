@@ -14,7 +14,7 @@ CFLAGS += -g -Wall # -Werror
 
 CPPFLAGS += -DHAVE_CONFIG_H
 ifneq ($(DEBUGGING),)
-CFLAGS += -DBLUEPY_DEBUG=1 -O0
+CFLAGS += -DBLUEPY_DEBUG_FILE_LOG=1 -O0
 else
 CFLAGS += -Os
 endif
@@ -48,6 +48,3 @@ TAGS: *.c $(BLUEZ_PATH)/attrib/*.[ch] $(BLUEZ_PATH)/btio/*.[ch]
 
 clean:
 	rm -rf *.o bluepy-helper TAGS $(BLUEZ_PATH)
-
-
-
